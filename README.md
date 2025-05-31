@@ -1,7 +1,3 @@
-img src="https://github.com/TYehan/SocialPhish/assets/85949077/66020179-cc24-4eb6-9028-cebd177c9f8e" alt="image" width="400" align="right">
-
----
-
 ## ⭐Socialfiyer -
 ***Remastered version of <b>SocialPhish</b> by <a href="https://github.com/xHak9x">xHak9x</a>***
 - 32 templates +1 customizable.
